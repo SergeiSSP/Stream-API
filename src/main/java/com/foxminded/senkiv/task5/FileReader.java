@@ -1,38 +1,31 @@
 package com.foxminded.senkiv.task5;
 
+import com.foxminded.senkiv.exceptions.RaceApplicationRuntimeException;
+
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.stream.Stream;
 
+import static com.foxminded.senkiv.task5.StringValidator.validateInputString;
+
 public class FileReader {
-    private String fileUri;
-
-    public void setFileUri(String uri){
-		validateUri(uri);
-        this.fileUri = uri;
-    }
-
-	public String getFileUri(){
-		return this.fileUri;
-	}
-
-    public Stream<String> createStream() throws IOException {
+    public Stream<String> createStream(String fileUri){
+		validateInputString(fileUri);
+		Path path = Paths.get(fileUri);
 		Stream<String> stream;
-		try {
-			Path path = Paths.get(fileUri);
-			stream = Files.lines(path);
-		}catch(NoSuchFileException e){
-			throw new NoSuchFileException("This file does not exist.");
+		try{
+			stream =  Files.lines(path);
+		}catch(IOException e){
+			throw new RaceApplicationRuntimeException("Failed to read the file.", e.getCause());
 		}
-        return stream;
+		return stream;
     }
 
-    private static void validateUri(String uri){
-        if(uri.trim().isEmpty()){
-            throw new IllegalArgumentException("Path to file is empty.");
-        }
-    }
+	public Iterator<String> createIterator(String fileUri) {
+		Stream<String> stream = createStream(fileUri);
+		return stream.sorted().iterator();
+	}
 }

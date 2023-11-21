@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 public class OutputManager {
-    private AbbreviationsHandler handler;
+    private AbbreviationsHandler abbreviationsHandler;
     private static final int POSITION_LENGTH = 2;
     private static final int NAME_LENGTH = 20;
     private static final int BRAND_LENGTH = 30;
@@ -16,23 +16,23 @@ public class OutputManager {
 
     @Autowired
     public void setAbbreviationHandler(AbbreviationsHandler handler){
-        this.handler = handler;
+        this.abbreviationsHandler = handler;
     }
-    public String entryCreation(Map.Entry<String, Double> score, int pos){
 
-        String[] nameOfRiderAndBrand = handler.getEntry(score.getKey()).split(",");
+    public String entryCreation(Map.Entry<String, Double> score, int pos) {
+		Map<String, String> abbreviationsMap = abbreviationsHandler.parseAbbreviations();
+        String[] nameOfRiderAndBrand = abbreviationsHandler.getEntry(score.getKey(), abbreviationsMap).split(",");
         Double time = score.getValue();
         return String.format("%s%s%s %f%n", position(pos), name(nameOfRiderAndBrand[0]), brand(nameOfRiderAndBrand[1]), time);
     }
 
-    public String reportStatistics(Map<String, Double> tablesScore) {
-        handler.parseAbbreviations();
+    public String reportStatistics(Map<String, Double> tablesScore)  {
         Stream<Map.Entry<String, Double>> result = tablesScore.entrySet().stream();
         result.sorted(Map.Entry.comparingByValue())
                 .forEach(score -> {
                     int pos = counter.incrementAndGet();
-                    sb.append(entryCreation(score, pos));
-                    if (pos == 15) {
+					sb.append(entryCreation(score, pos));
+					if (pos == 15) {
                         sb.append(looserLine()).append("\n");
                     }
                 });
@@ -56,7 +56,7 @@ public class OutputManager {
     }
 
     private String looserLine(){
-        int TOTAL_LENGTH = POSITION_LENGTH + NAME_LENGTH + BRAND_LENGTH;
-        return "-".repeat(TOTAL_LENGTH);
+        int totalLength = POSITION_LENGTH + NAME_LENGTH + BRAND_LENGTH;
+        return "-".repeat(totalLength);
     }
 }

@@ -1,5 +1,6 @@
 package com.foxminded.senkiv;
 
+import com.foxminded.senkiv.exceptions.RaceApplicationRuntimeException;
 import com.foxminded.senkiv.task5.LinesHandler;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +31,27 @@ class LinesHandlerTest {
 
 	@Test
 	void linesHandler_shouldThrowIllegalArgumentExceptionIfItCannotParseName(){
-		assertThrows(IllegalArgumentException.class, () -> LinesHandler.validateName("saW2"));
+		assertThrows(IllegalArgumentException.class, () -> LinesHandler.validateAbbreviationName("saW2"));
 	}
+
+	@Test
+	void getName_shouldThrowIllegalArgumentExceptionIfParameterIsNull(){
+		assertThrows(RaceApplicationRuntimeException.class, ()-> LinesHandler.getName(null));
+	}
+
+	@Test
+	void getTime_shouldThrowIllegalArgumentExceptionIfParameterIsNull(){
+		assertThrows(RaceApplicationRuntimeException.class, ()-> LinesHandler.getTime(null));
+	}
+
+	@Test
+	void getName_shouldThrowIllegalArgumentExceptionIfParameterIsEmptyString(){
+		assertThrows(RaceApplicationRuntimeException.class, ()-> LinesHandler.getName(null));
+	}
+
+	@Test
+	void getTime_shouldThrowIllegalArgumentExceptionIfParameterIsString(){
+		assertThrows(RaceApplicationRuntimeException.class, ()-> LinesHandler.getTime(null));
+	}
+
 }

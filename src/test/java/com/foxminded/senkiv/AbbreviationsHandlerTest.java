@@ -2,6 +2,7 @@ package com.foxminded.senkiv;
 
 import com.foxminded.senkiv.config.SpringConfiguration;
 import com.foxminded.senkiv.task5.AbbreviationsHandler;
+import com.foxminded.senkiv.task5.FileReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,9 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.io.IOException;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,25 +30,21 @@ class AbbreviationsHandlerTest {
 	}
 
 	@Test
-	void abbreviationsHandler_shouldReturnStreamThatThisClassPosses(){
-        assertNotNull(handler.getStream());
-	}
-
-	@Test
-	void abbreviationHandler_shouldParseSameAmountOfAbbreviationsThatWasInOriginalFile(ApplicationContext context){
+	void abbreviationHandler_shouldParseSameAmountOfAbbreviationsThatWasInOriginalFile(ApplicationContext context) throws IOException {
+		FileReader fileReader = context.getBean(FileReader.class);
 		AbbreviationsHandler handlerForComparing = context.getBean(AbbreviationsHandler.class);
 		handler.parseAbbreviations();
-		int sizeExpected = handlerForComparing.getStream().toArray().length;
+		int sizeExpected = fileReader.createStream("src/test/resources/abbreviations.txt").toArray().length;
 
-		int actualSizeOfMap = handler.map.size();
+		int actualSizeOfMap = handler.parseAbbreviations().size();
 		assertEquals(sizeExpected, actualSizeOfMap);
 	}
 
 	@ParameterizedTest
 	@CsvFileSource(resources= "/AbbreviationsForReference.csv", numLinesToSkip = 1)
-	void abreviationsHandler_shouldReturnCorrectNameForEachAbbreviation(String input, String expected){
-		handler.parseAbbreviations();
-		assertEquals(expected, handler.getEntry(input));
+	void abreviationsHandler_shouldReturnCorrectNameForEachAbbreviation(String input, String expected) throws IOException {
+		Map<String, String> map = handler.parseAbbreviations();
+		assertEquals(expected, handler.getEntry(input, map));
 	}
 
 

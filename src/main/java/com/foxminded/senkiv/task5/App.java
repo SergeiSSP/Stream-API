@@ -13,12 +13,12 @@ public class App
     public static final String END_FILE = "src/main/resources/end.log";
     public static final String ABBREVIATIONS = "src/main/resources/abbreviations.txt";
 
-    public static void main( String[] args ){
+    public static void main( String[] args ) {
         ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
         TimeCounter timeCounter = context.getBean(TimeCounter.class);
-        OutputManager manager = context.getBean(OutputManager.class);
+        OutputManager outputManager = context.getBean(OutputManager.class);
 
-        String result = manager.reportStatistics(timeCounter.findTheFastest());
+        String result = outputManager.reportStatistics(timeCounter.findResultsOfRace());
         logger.info(result);
     }
 }
