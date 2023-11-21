@@ -32,7 +32,6 @@ class AbbreviationsHandlerTest {
 	@Test
 	void abbreviationHandler_shouldParseSameAmountOfAbbreviationsThatWasInOriginalFile(ApplicationContext context) throws IOException {
 		FileReader fileReader = context.getBean(FileReader.class);
-		AbbreviationsHandler handlerForComparing = context.getBean(AbbreviationsHandler.class);
 		handler.parseAbbreviations();
 		int sizeExpected = fileReader.createStream("src/test/resources/abbreviations.txt").toArray().length;
 

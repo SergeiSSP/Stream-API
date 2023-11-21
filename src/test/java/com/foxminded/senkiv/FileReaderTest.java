@@ -17,7 +17,7 @@ class FileReaderTest {
 	void fileReader_shouldThrowIllegalArgumentExceptionIfFileWithSuchUriDoesNotExist() throws IOException {
 		String actualAddress = "/asd/asd/asd";
 		FileReader reader = new FileReader();
-		assertThrows(NoSuchFileException.class, ()-> reader.createStream(actualAddress));
+		assertThrows(RaceApplicationRuntimeException.class, ()-> reader.createStream(actualAddress));
 	}
 
 	@Test
