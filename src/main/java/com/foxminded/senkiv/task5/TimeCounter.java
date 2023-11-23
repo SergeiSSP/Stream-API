@@ -1,19 +1,27 @@
 package com.foxminded.senkiv.task5;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.foxminded.senkiv.task5.FileReader.createStream;
 import static com.foxminded.senkiv.task5.LinesHandler.getFormattedResult;
 
 public class TimeCounter {
+	private FileReader fileReader;
+
+	@Autowired
+	public void setFileReader(FileReader fileReader){
+		this.fileReader = fileReader;
+	}
+
 
 	public Map<String, Double> findResultsOfRace(String startUri, String endUri) {
-		Stream<String> startStream = createStream(startUri);
-		Stream<String> endStream = createStream(endUri);
+		Stream<String> startStream = fileReader.createStream(startUri);
+		Stream<String> endStream = fileReader.createStream(endUri);
 
 		Map<String, LocalTime> startInfo = getFormattedResult(startStream);
 		Map<String, LocalTime> endInfo = getFormattedResult(endStream);

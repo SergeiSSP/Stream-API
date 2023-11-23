@@ -11,9 +11,7 @@ import java.util.stream.Stream;
 import static com.foxminded.senkiv.task5.StringValidator.validateInputString;
 
 public class FileReader {
-	private FileReader(){}
-
-	public static Stream<String> createStream(String uri){
+	public Stream<String> createStream(String uri){
 		validateInputString(uri);
 		Path path = Paths.get(uri);
 		try{

@@ -1,5 +1,7 @@
 package com.foxminded.senkiv.task5;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -12,11 +14,17 @@ public class OutputManager {
     private static final int NAME_LENGTH = 20;
     private static final int BRAND_LENGTH = 30;
     private final AtomicInteger counter = new AtomicInteger();
+	private AbbreviationsHandler abbreviationsHandler;
+
+	@Autowired
+	public void setAbbreviationsHandler(AbbreviationsHandler abbreviationsHandler){
+		this.abbreviationsHandler = abbreviationsHandler;
+	}
 
 
     public String entryCreation(Map.Entry<String, Double> score, int pos) {
-		Map<String, String> abbreviationsMap = AbbreviationsHandler.parseAbbreviations(ABBREVIATIONS);
-        String[] nameOfRiderAndBrand = AbbreviationsHandler.getEntry(score.getKey(), abbreviationsMap).split(",");
+		Map<String, String> abbreviationsMap = abbreviationsHandler.parseAbbreviations(ABBREVIATIONS);
+        String[] nameOfRiderAndBrand = abbreviationsHandler.getEntry(score.getKey(), abbreviationsMap).split(",");
         Double time = score.getValue();
         String result = String.format("%n%s%s%s %f", position(pos), name(nameOfRiderAndBrand[0]), brand(nameOfRiderAndBrand[1]), time);
 		if(pos == 15){

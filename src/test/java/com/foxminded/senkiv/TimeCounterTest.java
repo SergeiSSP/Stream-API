@@ -18,15 +18,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ContextConfiguration(classes= SpringConfiguration.class)
 class TimeCounterTest {
 	private static TimeCounter counter;
+	private static FileReader fileReader;
 
 	@BeforeAll
-	static void setContext(ApplicationContext contextToAssign){
-		counter = contextToAssign.getBean(TimeCounter.class);
+	static void setUp(ApplicationContext context){
+		counter = context.getBean(TimeCounter.class);
+		fileReader = context.getBean(FileReader.class);
 	}
 
 	@Test
 	void findTheFastest_shouldReturnSameAmountOfRidersAsWasInFile() {
 		Map<String, Double> map = counter.findResultsOfRace("src/test/resources/start.log", "src/test/resources/end.log");
-		assertEquals(FileReader.createStream("src/test/resources/end.log").toArray().length, map.size());
+		assertEquals(fileReader.createStream("src/test/resources/end.log").toArray().length, map.size());
 	}
 }

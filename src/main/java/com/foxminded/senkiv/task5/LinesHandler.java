@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import static com.foxminded.senkiv.task5.StringValidator.validateInputString;
 
 public class LinesHandler {
+	private static final int END_INDEX_OF_NAME_SUBSTRING = 3;
     private LinesHandler(){}
 
     public  static LocalTime getTime(String line){
@@ -26,7 +27,7 @@ public class LinesHandler {
 
 	public static String getBrandName(String line){
 		validateInputString(line);
-		String result = line.substring(0, 3);
+		String result = line.substring(0, END_INDEX_OF_NAME_SUBSTRING);
 		validateAbbreviationName(result);
 		return result;
 	}
