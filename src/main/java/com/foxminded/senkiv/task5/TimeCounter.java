@@ -1,35 +1,27 @@
 package com.foxminded.senkiv.task5;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.time.LocalTime;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static com.foxminded.senkiv.task5.App.END_FILE;
-import static com.foxminded.senkiv.task5.App.START_FILE;
+import static com.foxminded.senkiv.task5.FileReader.createStream;
+import static com.foxminded.senkiv.task5.LinesHandler.getFormattedResult;
 
 public class TimeCounter {
-	private FileReader fileReader;
-	@Autowired
-	public void setFileReader(FileReader fileReader){
-		this.fileReader = fileReader;
-	}
 
-	public Map<String, Double> findResultsOfRace() {
-		Iterator<String> startIterator = fileReader.createIterator(START_FILE);
-		Iterator<String> endIterator = fileReader.createIterator(END_FILE);
-		Map<String, Double> tableScore = new HashMap<>();
+	public Map<String, Double> findResultsOfRace(String startUri, String endUri) {
+		Stream<String> startStream = createStream(startUri);
+		Stream<String> endStream = createStream(endUri);
 
-        while(startIterator.hasNext() && endIterator.hasNext()){
-            String startOfRace = startIterator.next();
-            String endOfRace = endIterator.next();
-            double score = Duration.between(LinesHandler.getTime(startOfRace), LinesHandler.getTime(endOfRace)).toMillis() / 1_000.0;
-            tableScore.put(LinesHandler.getName(startOfRace), score);
-        }
+		Map<String, LocalTime> startInfo = getFormattedResult(startStream);
+		Map<String, LocalTime> endInfo = getFormattedResult(endStream);
 
-        return tableScore;
+		Stream<String> entries = startInfo.keySet().stream();
+
+		return entries
+			.map(key ->  Map.entry(key, Duration.between(startInfo.get(key), endInfo.get(key)).toMillis() / 1_000.0))
+			.collect(Collectors.toMap( Map.Entry::getKey, Map.Entry::getValue));
     }
 }

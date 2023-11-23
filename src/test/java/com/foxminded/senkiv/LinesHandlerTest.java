@@ -25,7 +25,7 @@ class LinesHandlerTest {
 	@Test
 	void linesHandler_shouldParseNameOfRiderCorrectly(){
 		String input = "MES2018-05-24_12:05:58.778";
-		String actualResult = LinesHandler.getName(input);
+		String actualResult = LinesHandler.getBrandName(input);
 		assertEquals("MES", actualResult);
 	}
 
@@ -36,7 +36,7 @@ class LinesHandlerTest {
 
 	@Test
 	void getName_shouldThrowIllegalArgumentExceptionIfParameterIsNull(){
-		assertThrows(RaceApplicationRuntimeException.class, ()-> LinesHandler.getName(null));
+		assertThrows(RaceApplicationRuntimeException.class, ()-> LinesHandler.getBrandName(null));
 	}
 
 	@Test
@@ -46,7 +46,7 @@ class LinesHandlerTest {
 
 	@Test
 	void getName_shouldThrowIllegalArgumentExceptionIfParameterIsEmptyString(){
-		assertThrows(RaceApplicationRuntimeException.class, ()-> LinesHandler.getName(null));
+		assertThrows(RaceApplicationRuntimeException.class, ()-> LinesHandler.getBrandName(null));
 	}
 
 	@Test

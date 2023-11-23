@@ -1,42 +1,36 @@
 package com.foxminded.senkiv.task5;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.foxminded.senkiv.task5.App.ABBREVIATIONS;
+
 public class OutputManager {
-    private AbbreviationsHandler abbreviationsHandler;
     private static final int POSITION_LENGTH = 2;
     private static final int NAME_LENGTH = 20;
     private static final int BRAND_LENGTH = 30;
     private final AtomicInteger counter = new AtomicInteger();
-    private final StringBuilder sb = new StringBuilder("\n");
 
-    @Autowired
-    public void setAbbreviationHandler(AbbreviationsHandler handler){
-        this.abbreviationsHandler = handler;
-    }
 
     public String entryCreation(Map.Entry<String, Double> score, int pos) {
-		Map<String, String> abbreviationsMap = abbreviationsHandler.parseAbbreviations();
-        String[] nameOfRiderAndBrand = abbreviationsHandler.getEntry(score.getKey(), abbreviationsMap).split(",");
+		Map<String, String> abbreviationsMap = AbbreviationsHandler.parseAbbreviations(ABBREVIATIONS);
+        String[] nameOfRiderAndBrand = AbbreviationsHandler.getEntry(score.getKey(), abbreviationsMap).split(",");
         Double time = score.getValue();
-        return String.format("%s%s%s %f%n", position(pos), name(nameOfRiderAndBrand[0]), brand(nameOfRiderAndBrand[1]), time);
+        String result = String.format("%n%s%s%s %f", position(pos), name(nameOfRiderAndBrand[0]), brand(nameOfRiderAndBrand[1]), time);
+		if(pos == 15){
+			result += looserLine();
+		}
+		return result;
     }
 
     public String reportStatistics(Map<String, Double> tablesScore)  {
         Stream<Map.Entry<String, Double>> result = tablesScore.entrySet().stream();
-        result.sorted(Map.Entry.comparingByValue())
-                .forEach(score -> {
-                    int pos = counter.incrementAndGet();
-					sb.append(entryCreation(score, pos));
-					if (pos == 15) {
-                        sb.append(looserLine()).append("\n");
-                    }
-                });
-        return sb.toString();
+		return result
+			.sorted(Map.Entry.comparingByValue())
+			.map(score -> entryCreation(score, counter.incrementAndGet()))
+			.collect(Collectors.joining());
     }
 
     private String position(int position){
@@ -57,6 +51,6 @@ public class OutputManager {
 
     private String looserLine(){
         int totalLength = POSITION_LENGTH + NAME_LENGTH + BRAND_LENGTH;
-        return "-".repeat(totalLength);
+        return "\n" + "-".repeat(totalLength);
     }
 }

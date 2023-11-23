@@ -2,9 +2,11 @@ package com.foxminded.senkiv.task5;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.foxminded.senkiv.task5.StringValidator.validateInputString;
-
 
 public class LinesHandler {
     private LinesHandler(){}
@@ -14,7 +16,7 @@ public class LinesHandler {
         String[] arr;
 		LocalTime result;
 		try {
-			arr = line.split("_");
+			arr = line.split(	"_");
 			result = LocalTime.parse(arr[1]);
 			return result;
 		}catch(DateTimeParseException e){
@@ -22,13 +24,19 @@ public class LinesHandler {
 		}
 	}
 
-    public static String getName(String line){
+	public static String getBrandName(String line){
 		validateInputString(line);
-        String[] arr = line.split("\\d");
-		String result = arr[0];
+		String result = line.substring(0, 3);
 		validateAbbreviationName(result);
-        return result;
-    }
+		return result;
+	}
+
+	public static Map<String, LocalTime> getFormattedResult(Stream<String> stream){
+		return stream
+			.map(line -> Map.entry(getBrandName(line), getTime(line)))
+			.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+	}
+
 
 	public static void validateAbbreviationName(String name){
 		if(name.length() != 3 && !name.equals(name.toUpperCase())){

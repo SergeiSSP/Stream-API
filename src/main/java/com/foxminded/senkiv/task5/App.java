@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+
 public class App
 {
     private static final Logger logger = LogManager.getLogger(App.class);
@@ -18,7 +19,7 @@ public class App
         TimeCounter timeCounter = context.getBean(TimeCounter.class);
         OutputManager outputManager = context.getBean(OutputManager.class);
 
-        String result = outputManager.reportStatistics(timeCounter.findResultsOfRace());
+        String result = outputManager.reportStatistics(timeCounter.findResultsOfRace(START_FILE, END_FILE));
         logger.info(result);
-    }
+	}
 }
